@@ -1,0 +1,19 @@
+  int IN3 = 3;
+  int IN4 = 4;
+  int ENB = 5;
+
+void setup() {
+
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+  IN3 = 1;
+  IN4 = 0;
+}
+
+void loop() {
+  analogWrite(ENB, 120);
+}
