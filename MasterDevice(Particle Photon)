@@ -1,0 +1,71 @@
+int Car_1 = D1;
+int Car_2 = D2;
+
+int Signal_Car_1 = D3;
+int Signal_Car_2 = D4;
+int Car_To_Delay = Signal_Car_1;
+
+unsigned long delta;
+
+volatile unsigned long Ticks_Car_1 = 0;
+volatile unsigned long Ticks_Car_2 = 0;
+
+void setup() {
+    
+    pinMode(Car_1, INPUT);
+    pinMode(Car_2, INPUT);
+    pinMode(Car_To_Delay, OUTPUT);
+    
+    attachInterrupt(Car_1, Record_Car_1_Interrupt, RISING);
+    attachInterrupt(Car_2, Record_Car_2_Interrupt, RISING);
+}
+
+void loop() 
+{
+    Signal_Priority_Car();
+    delay(500);
+}
+
+bool isCollisionImminent(unsigned long Ticks_Car_1, unsigned long Ticks_Car_2)
+{
+    if (Ticks_Car_1 == 0 || Ticks_Car_2 == 0 ) 
+    {
+        return false;
+    }
+    
+    delta = Ticks_Car_1 - Ticks_Car_2;
+    delta = abs(delta);
+    
+    if (delta < 500)
+    {
+        return true;
+    }
+    
+    else
+    {
+        return false;
+    }
+}
+
+void Record_Car_1_Interrupt()
+{
+    Ticks_Car_1 = millis();
+}
+
+void Record_Car_2_Interrupt()
+{
+    Ticks_Car_2 = millis();
+    
+}
+
+void Signal_Priority_Car()
+{
+    if (isCollisionImminent(Ticks_Car_1, Ticks_Car_2))
+    {
+        digitalWrite(Car_To_Delay, HIGH);
+        delay(200);
+        digitalWrite(Car_To_Delay, LOW);
+        delay(200);
+    }
+}
+
